@@ -1,5 +1,6 @@
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class Bank {
     private final ArrayList<Account> accounts;
@@ -9,14 +10,18 @@ public class Bank {
     }
 
     public void createAccount(String name, String code) {
-        if (!isAccountExist(code)) {
-            accounts.add(new Account(name, code));
+        if (isCodeValid(code) && isNameValid(name)) {
+            if (!isAccountExist(code)) {
+                accounts.add(new Account(name, code));
+            } else {
+                System.out.println("Account with code " + code + " already exists!");
+            }
         } else {
-            System.out.println("Account with code " + code + " already exists!");
+            System.out.println("Invalid name or code entered!");
         }
     }
 
-    public boolean isAccountExist(String code) {
+    private boolean isAccountExist(String code) {
         for (Account acc : accounts) {
             if (acc.getCode().equalsIgnoreCase(code)) {
                 return true;
@@ -25,11 +30,9 @@ public class Bank {
         return false;
     }
 
-
     public void depositAmount(String code, String inputAmount) {
         try {
             BigDecimal amountToDeposit = new BigDecimal(inputAmount);
-
             if (amountToDeposit.compareTo(new BigDecimal("0")) < 0) {  //check if entered number is negative
                 throw new NegativeNumberException("Please enter valid amount!");
             } else {
@@ -53,7 +56,6 @@ public class Bank {
     public void withdrawAmount(String code, String inputAmount) {
         try {
             BigDecimal amountToWithdraw = new BigDecimal(inputAmount);
-
             if (amountToWithdraw.compareTo(new BigDecimal("0")) < 0) {  //check if entered number is negative
                 throw new NegativeNumberException("Please enter valid amount!");
             } else {
@@ -94,24 +96,38 @@ public class Bank {
         }
     }
 
+    private boolean isCodeValid(String code) {
+        String pattern = "^[A-Za-z\\d]+$";
+        if (Pattern.matches(pattern, code)) {
+            return true;
+        }
+        return false;
+    }
 
-    public class UnknownAccountException extends RuntimeException {
+
+    private boolean isNameValid(String name) {
+        String pattern = "^[A-Za-z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$";
+        if (Pattern.matches(pattern, name)) {
+            return true;
+        }
+        return false;
+    }
+
+    private class UnknownAccountException extends RuntimeException {
         public UnknownAccountException(String message) {
             super(message);
         }
     }
 
-
-    public class NegativeNumberException extends RuntimeException {
+    private class NegativeNumberException extends RuntimeException {
         public NegativeNumberException(String message) {
             super(message);
         }
     }
 
-    public class NotEnoughFundException extends RuntimeException{
-        public NotEnoughFundException(String message){
+    private class NotEnoughFundException extends RuntimeException {
+        public NotEnoughFundException(String message) {
             super(message);
         }
     }
-
 }

@@ -2,15 +2,13 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         Bank bank = new Bank();
 
         try (Scanner input = new Scanner(System.in)) {
             String command;
             boolean exit = false;
-
             System.out.println("Please enter a command (enter q to exit): ");
             while (!exit) {
                 command = input.nextLine();
@@ -21,44 +19,32 @@ public class Main {
                 String inputAmount;
 
                 switch (commandSplit[0].toLowerCase()) {
-                    case "q":
-                        exit = true;
-                        break;
-
-                    case "create":
+                    case "q" -> exit = true;
+                    case "create" -> {
                         code = commandSplit[1];
                         name = commandSplit[2];
                         bank.createAccount(name, code);
-                        break;
-
-                    case "deposit":
+                    }
+                    case "deposit" -> {
                         code = commandSplit[1];
                         inputAmount = commandSplit[2];
                         bank.depositAmount(code, inputAmount);
-                        break;
-
-
-                    case "withdraw":
+                    }
+                    case "withdraw" -> {
                         code = commandSplit[1];
                         inputAmount = commandSplit[2];
                         bank.withdrawAmount(code, inputAmount);
-                        break;
-
-                    case "balance":
+                    }
+                    case "balance" -> {
                         code = commandSplit[1];
                         bank.balance(code);
-                        break;
-
-                    default:
-                        System.out.println("Invalid command!");
-
+                    }
+                    default -> System.out.println("Invalid command!");
                 }
             }
             throw new IOException("Thank you for using our service.");
-        }catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-
     }
-
 }
